@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FISIKA - Gerak</title>
+    
+    <!-- PWA Manifest (Pastikan Anda sudah memiliki file manifest.json) -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Fallback inline manifest jika file eksternal tidak ditemukan -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        %22name%22:%20%22LKPD%20Gerak%20Parabola%22,
+        %22short_name%22:%20%22Gerak%20Parabola%22,
+        %22start_url%22:%20%22.%22,
+        %22display%22:%20%22standalone%22,
+        %22background_color%22:%20%22%23ffffff%22,
+        %22theme_color%22:%20%22%233b82f6%22,
+        %22icons%22:%20[
+            {%22src%22:%20%22https://placehold.co/192x192/3b82f6/ffffff?text=GP%22,%20%22sizes%22:%20%22192x192%22,%20%22type%22:%20%22image/png%22},
+            {%22src%22:%20%22https://placehold.co/512x512/3b82f6/ffffff?text=GP%22,%20%22sizes%22:%20%22512x512%22,%20%22type%22:%20%22image/png%22}
+        ]
+    }">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for Formulas -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- html2canvas for Screenshots -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        canvas {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            width: 100%;
+            height: 400px;
+            cursor: crosshair;
+        }
+
+        .nav-button.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    
+        main{
+            margin-top:120px;
+        }
+
+        @media (max-width:768px){
+            main{
+                margin-top:140px;
+            }
+        }
+        </style>
+</head>
+<body class="bg-white text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md fixed top-0 left-0 right-0 z-50 transition-transform duration-300">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">LKPD : Gerak Parabola</h1>
+                <p class="text-blue-200 text-sm">Fisika Kelas XI - MAN 2 INDRAMAYU</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex space-x-2 bg-blue-700 p-1 rounded-lg">
+                <button onclick="openTab('materi', this)" class="nav-button active px-4 py-2 rounded-md font-semibold text-sm transition-all text-blue-100 hover:text-white">Materi</button>
+                <button onclick="openTab('simulasi', this)" class="nav-button px-4 py-2 rounded-md font-semibold text-sm transition-all text-blue-100 hover:text-white">Simulasi</button>
+                <button onclick="openTab('evaluasi', this)" class="nav-button px-4 py-2 rounded-md font-semibold text-sm transition-all text-blue-100 hover:text-white">Evaluasi</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto w-full p-4 md:p-6 lg:py-8 ">
+        
+        <!-- SECTION 1: MATERI -->
+        <section id="materi" class="tab-content active bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Konsep Gerak Parabola</h2>
+            
+            <div class="prose max-w-none text-gray-700">
+                <p class="mb-4 text-lg" style="text-align: justify;" >Gerak parabola (atau gerak peluru) adalah gerak dua dimensi dari suatu benda yang dilemparkan ke udara, di mana benda tersebut hanya dipengaruhi oleh percepatan gravitasi (mengabaikan hambatan udara). Gerak parabola adalah gerak benda yang dilempar dengan sudut tertentu sehingga lintasannya berbentuk parabola. Hal ini terjadi karena benda mengalami dua gerak sekaligus, yaitu gerak horizontal dan gerak vertikal. Pada arah horizontal, benda bergerak dengan kecepatan tetap karena tidak dipengaruhi gaya gravitasi, sedangkan pada arah vertikal benda mengalami percepatan akibat gaya gravitasi sehingga kecepatannya berubah. Perpaduan antara gerak horizontal yang konstan dan gerak vertikal yang dipercepat oleh gravitasi inilah yang menyebabkan lintasan benda berbentuk melengkung seperti parabola.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 my-8">
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3">1. Gerak Horizontal (Sumbu X)</h3>
+                        <p class="mb-2">Merupakan Gerak Lurus Beraturan (GLB). Kecepatan benda pada sumbu X selalu konstan karena tidak ada percepatan mendatar.</p>
+                        <div class="bg-white p-3 rounded text-center shadow-sm font-mono text-sm">
+                            \( v_x = v_0 \cos(\theta) \)
+                        </div>
+                        <div class="bg-white p-3 rounded text-center shadow-sm font-mono text-sm mt-2">
+                            \( X = v_0 \cos(\theta) \cdot t \)
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-6 rounded-xl border border-green-100">
+                        <h3 class="text-xl font-bold text-green-800 mb-3">2. Gerak Vertikal (Sumbu Y)</h3>
+                        <p class="mb-2">Merupakan Gerak Lurus Berubah Beraturan (GLBB). Benda dipengaruhi oleh percepatan gravitasi bumi ke bawah (\(g\)).</p>
+                        <div class="bg-white p-3 rounded text-center shadow-sm font-mono text-sm">
+                            \( v_y = v_0 \sin(\theta) - g \cdot t \)
+                        </div>
+                        <div class="bg-white p-3 rounded text-center shadow-sm font-mono text-sm mt-2">
+                            \( Y = v_0 \sin(\theta) \cdot t - \frac{1}{2} g t^2 \)
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Rumus Penting</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-3 px-4 text-left border-b font-semibold text-gray-700">Kondisi</th>
+                                <th class="py-3 px-4 text-left border-b font-semibold text-gray-700">Persamaan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-4 px-4">Waktu mencapai titik tertinggi (\(t_{max}\))</td>
+                                <td class="py-4 px-4 font-mono text-sm">\( t_{max} = \frac{v_0 \sin(\theta)}{g} \)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4">Tinggi maksimum (\(Y_{max}\))</td>
+                                <td class="py-4 px-4 font-mono text-sm">\( Y_{max} = \frac{v_0^2 \sin^2(\theta)}{2g} \)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4">Jarak mendatar terjauh (\(X_{max}\))</td>
+                                <td class="py-4 px-4 font-mono text-sm">\( X_{max} = \frac{v_0^2 \sin(2\theta)}{g} \)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SIMULASI -->
+        <section id="simulasi" class="tab-content bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Simulasi Interaktif</h2>
+            
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Controls (Game Style Dashboard) -->
+                <div class="lg:w-1/3 bg-white rounded-2xl border border-gray-200 shadow-lg flex flex-col justify-between relative overflow-hidden">
+                    
+                    <div class="relative z-10 p-5">
+                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-6 flex items-center justify-center shadow-sm">
+                            <h3 class="text-xl font-black tracking-widest text-blue-700 flex items-center">
+                                🎮 KENDALI MISI
+                            </h3>
+                        </div>
+                        
+                        <!-- Velocity Control -->
+                        <div class="mb-5 bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <label for="velocity" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                                Kecepatan (v₀)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="velocity" min="0" max="100" value="30" class="w-full bg-white text-blue-600 font-mono font-bold border border-gray-300 rounded-lg py-3 pl-4 pr-14 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm text-xl transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 font-bold">
+                                    m/s
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Angle Control -->
+                        <div class="mb-5 bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <label for="angle" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                                Sudut (θ)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="angle" min="0" max="90" value="60" class="w-full bg-white text-yellow-600 font-mono font-bold border border-gray-300 rounded-lg py-3 pl-4 pr-12 outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 shadow-sm text-xl transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-5 pointer-events-none text-gray-400 font-bold">
+                                    &deg;
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gravity Control -->
+                        <div class="mb-2 bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <label for="gravity" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">
+                                Gravitasi (g)
+                            </label>
+                            <div class="relative">
+                                <select id="gravity" class="w-full bg-white text-purple-700 font-bold border border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 cursor-pointer appearance-none shadow-sm text-lg">
+                                    <option value="9.8">🌍 BUMI (9.8 m/s²)</option>
+                                    <option value="1.62">🌕 BULAN (1.62 m/s²)</option>
+                                    <option value="3.71">🪐 MARS (3.71 m/s²)</option>
+                                    <option value="24.79">🌌 JUPITER (24.79 m/s²)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="relative z-10 flex gap-3 p-5 bg-gray-50 border-t border-gray-200">
+                        <button id="btn-shoot" class="flex-1 bg-gradient-to-t from-blue-700 to-blue-500 hover:from-blue-600 hover:to-blue-400 border-b-4 border-blue-900 text-white py-4 rounded-xl font-black text-xl tracking-wider shadow-md active:border-b-0 active:translate-y-1 transition-all flex justify-center items-center">
+                            🚀 LAUNCH
+                        </button>
+                        <button id="btn-clear" class="px-5 bg-gray-200 hover:bg-gray-300 border-b-4 border-gray-400 text-gray-700 py-4 rounded-xl font-bold uppercase tracking-wide shadow-sm active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center">
+                            ⟲ RESET
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas and Real-time Data -->
+                <div class="lg:w-2/3 flex flex-col gap-4">
+                    <div class="relative rounded-xl border border-gray-300 shadow-inner overflow-hidden">
+                        <canvas id="simCanvas"></canvas>
+
+                        <!-- Real-time HUD overlay -->
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm border border-gray-200 p-3 rounded-lg shadow-sm text-sm font-mono flex flex-col gap-1 w-48">
+                            <div class="flex justify-between"><span class="text-gray-500">Waktu (t)</span> <span id="out-t" class="font-bold text-gray-800">0.00 s</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Jarak (x)</span> <span id="out-x" class="font-bold text-blue-600">0.00 m</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Tinggi (y)</span> <span id="out-y" class="font-bold text-green-600">0.00 m</span></div>
+                            <div class="flex justify-between border-t border-gray-200 pt-1 mt-1"><span class="text-gray-500">Kecepatan</span> <span id="out-v" class="font-bold text-red-500">0.00 m/s</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Theoretical Results -->
+                    <div id="res-panel" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-wrap justify-around gap-4 text-center shadow-sm">
+                        <div>
+                            <p class="text-xs text-blue-500 font-bold uppercase">Tinggi Maks Teoritis</p>
+                            <p class="text-xl font-bold text-blue-800"><span id="res-ymax">0</span> m</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-500 font-bold uppercase">Jarak Maks Teoritis</p>
+                            <p class="text-xl font-bold text-blue-800"><span id="res-xmax">0</span> m</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-blue-500 font-bold uppercase">Waktu Total Teoritis</p>
+                            <p class="text-xl font-bold text-blue-800"><span id="res-ttot">0</span> s</p>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col mt-2">
+                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider">📊 Tabel Data Lintasan</h3>
+                            <span class="text-xs text-gray-500">Otomatis dicatat setiap 0.2 detik</span>
+                        </div>
+                        <div id="table-container" class="overflow-y-auto max-h-48">
+                            <table class="min-w-full text-sm text-center">
+                                <thead class="bg-gray-100 sticky top-0 text-gray-600 shadow-sm z-10">
+                                    <tr>
+                                        <th class="py-2 px-3 border-b font-medium">Peluncuran</th>
+                                        <th class="py-2 px-3 border-b font-medium">Waktu (s)</th>
+                                        <th class="py-2 px-3 border-b font-medium">Pos X (m)</th>
+                                        <th class="py-2 px-3 border-b font-medium">Pos Y (m)</th>
+                                        <th class="py-2 px-3 border-b font-medium bg-blue-50">Vx (m/s)</th>
+                                        <th class="py-2 px-3 border-b font-medium bg-green-50">Vy (m/s)</th>
+                                        <th class="py-2 px-3 border-b font-medium bg-red-50">V Total (m/s)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-table-body" class="divide-y divide-gray-100">
+                                    <!-- Data Rows Here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: EVALUASI -->
+        <section id="evaluasi" class="tab-content bg-white rounded-xl shadow-lg p-6 md:p-8 border border-gray-100">
+            <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Lembar Evaluasi</h2>
+            
+            <form class="space-y-6" onsubmit="event.preventDefault(); alert('Silahkan tekan tombol Simpan di bawah untuk mengekspor LKPD.');">
+                
+                <!-- Identitas -->
+                <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Identitas Siswa</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa</label>
+                            <input type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-2 border" placeholder="Masukkan nama...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+                            <input type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-2 border" placeholder="Misal: XI-F1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tugas 1 (Sudah diperbarui rows=2) -->
+                <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Tugas 1: Pemahaman Konsep</h3>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">1. Pada sudut berapakah gerak parabola mencapai titik terjauh?</label>
+                        <textarea rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban Anda..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">2. Pada sudut berapakah gerak parabola mencapai titik tertinggi?</label>
+                        <textarea rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban Anda..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">3. Simulasikan dua kondisi ketika nilai kecepatan awal (v) diubah sementara sudut tetap. Jelaskan pengaruh perubahan tersebut terhadap gerak benda dan apa yang terjadi pada hasil lintasannya.</label>
+                        <textarea rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban Anda..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">4. Kenapa gerak parabola berbentuk parabola?</label>
+                        <textarea rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban Anda..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">5. Dengan sudut dan kecepatan awal yang sama, berdasarkan simulasi, di antara Bumi, Mars, Bulan, dan Jupiter, manakah yang menghasilkan jarak terjauh pada gerak parabola? Besaran apa yang memengaruhi hal tersebut?</label>
+                        <textarea rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban Anda..."></textarea>
+                    </div>
+                
+                </div>
+
+                <!-- Tugas 2 -->
+                <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Tugas 2: Perbandingan Antar Planet & Hitung Manual</h3>
+                    <p class="text-sm text-gray-600 mb-4">Atur kecepatan awal (\(v_0\)) = 20 m/s dan sudut (\(\theta\)) = 45&deg;. Lakukan peluncuran simulasi di berbagai planet dengan mengubah nilai <strong>Gravitasi (g)</strong> pada panel kendali. Kemudian, lakukan perhitungan manual menggunakan rumus \(X_{max}\) dan catat hasilnya.</p>
+                    
+                    <div class="overflow-x-auto mb-4 border rounded-lg">
+                        <table class="min-w-full bg-white text-sm">
+                            <thead class="bg-blue-100 text-blue-900 border-b border-gray-300">
+                                <tr>
+                                    <th class="py-3 px-4 text-left border-r">Lokasi Planet</th>
+                                    <th class="py-3 px-4 text-center border-r">Gravitasi (g)</th>
+                                    <th class="py-3 px-4 text-center border-r">Jarak Terjauh Simulasi (\(X_{max}\))</th>
+                                    <th class="py-3 px-4 text-center">Jarak Terjauh Hitung Manual (\(X_{max}\))</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-2 px-4 border-r font-semibold">Bumi 🌍</td>
+                                    <td class="py-2 px-4 border-r text-center">9.8 m/s&sup2;</td>
+                                    <td class="py-2 px-4 border-r"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-blue-200 outline-none" placeholder="Dari simulasi..."></td>
+                                    <td class="py-2 px-4"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-purple-200 outline-none" placeholder="Hitung dengan rumus..."></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border-r font-semibold">Bulan 🌕</td>
+                                    <td class="py-2 px-4 border-r text-center">1.62 m/s&sup2;</td>
+                                    <td class="py-2 px-4 border-r"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-blue-200 outline-none" placeholder="Dari simulasi..."></td>
+                                    <td class="py-2 px-4"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-purple-200 outline-none" placeholder="Hitung dengan rumus..."></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border-r font-semibold">Mars 🪐</td>
+                                    <td class="py-2 px-4 border-r text-center">3.71 m/s&sup2;</td>
+                                    <td class="py-2 px-4 border-r"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-blue-200 outline-none" placeholder="Dari simulasi..."></td>
+                                    <td class="py-2 px-4"><input type="number" step="0.01" class="w-full p-2 border rounded focus:ring focus:ring-purple-200 outline-none" placeholder="Hitung dengan rumus..."></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">1. Berdasarkan data tabel di atas, bagaimana pengaruh besar percepatan gravitasi terhadap jarak mendatar terjauh yang dapat dicapai proyektil?</label>
+                        <textarea rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Tuliskan analisis Anda..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">2. Bandingkan data <strong>Jarak Terjauh Simulasi</strong> dengan hasil <strong>Jarak Terjauh Hitung Manual</strong> yang Anda kerjakan. Apakah hasilnya sama persis? Jika ada perbedaan, jelaskan mengapa hal tersebut dapat terjadi!</label>
+                        <textarea rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 p-3 border" placeholder="Jawaban evaluasi hasil manual vs simulasi..."></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="button" onclick="simpanLokal()" class="bg-green-600 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-green-700 transition flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Simpan LKPD (Screenshot)
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm">
+        <p>&copy; 2026 Rustaman - PWA Project</p>
+    </footer>
+
+    <!-- Service Worker Registration -->
+    <script>
+        // Screenshot Function
+        async function simpanLokal() {
+            const btn = document.querySelector('button[onclick="simpanLokal()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '📸 Menyimpan...';
+            btn.disabled = true;
+            btn.classList.replace('bg-green-600', 'bg-gray-500');
+
+            try {
+                // Ensure MathJax has finished rendering
+                if (window.MathJax) {
+                    await MathJax.typesetPromise();
+                }
+
+                // [FIX 1: Mencegah Layar Putih di iOS] Simpan posisi scroll dan paksa ke atas
+                const currentScrollPos = window.scrollY;
+                window.scrollTo(0, 0);
+
+                // Beri jeda 300ms agar browser merender posisi scroll dengan sempurna
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                const mainContent = document.querySelector('main');
+                
+                // [FIX 2: Mencegah Hasil Pudar/Transparan] Matikan animasi CSS sementara
+                // html2canvas sering salah menangkap opacity:0 dari keyframes fadeIn
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) {
+                    activeTab.style.animation = 'none';
+                    activeTab.style.opacity = '1';
+                }
+
+                // [FIX 3: Mencegah Tulisan Pecah/Blur] Gunakan resolusi layar perangkat (Pixel Ratio)
+                const scaleValue = Math.max(2, window.devicePixelRatio || 1);
+
+                const canvas = await html2canvas(mainContent, {
+                    scale: scaleValue, 
+                    useCORS: true, 
+                    backgroundColor: "#ffffff",
+                    scrollY: 0,
+                    scrollX: 0
+                });
+
+                // Kembalikan style animasi dan kembalikan posisi scroll pengguna
+                if (activeTab) {
+                    activeTab.style.animation = '';
+                    activeTab.style.opacity = '';
+                }
+                window.scrollTo(0, currentScrollPos);
+
+                // [FIX 4: Format JPEG] Mencegah error memori (crash/layar putih) di browser HP 
+                // karena mengekspor gambar ukuran panjang dalam format PNG memakan RAM sangat besar
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const link = document.createElement('a');
+                link.download = 'Hasil_LKPD_Gerak_Parabola.jpg';
+                link.href = imgData;
+                link.click();
+
+                btn.innerHTML = '✔ Berhasil Disimpan!';
+                btn.classList.replace('bg-gray-500', 'bg-blue-600');
+            } catch (error) {
+                console.error("Error taking screenshot:", error);
+                btn.innerHTML = '❌ Gagal Menyimpan';
+                btn.classList.replace('bg-gray-500', 'bg-red-600');
+            } finally {
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-blue-600', 'bg-red-600');
+                    btn.classList.add('bg-green-600');
+                    btn.disabled = false;
+                }, 3000);
+            }
+        }
+
+        // Tab Navigation Logic
+        function openTab(tabName, btnElement) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            btnElement.classList.add('active');
+
+            if(tabName === 'simulasi') {
+                setTimeout(resizeCanvas, 50);
+            }
+        }
+
+        // Canvas Setup & Variables
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const outT = document.getElementById('out-t');
+        const outX = document.getElementById('out-x');
+        const outY = document.getElementById('out-y');
+        const outV = document.getElementById('out-v');
+        
+        const dataTableBody = document.getElementById('data-table-body');
+        const tableContainer = document.getElementById('table-container');
+        
+        const resPanel = document.getElementById('res-panel');
+        const resYmax = document.getElementById('res-ymax');
+        const resXmax = document.getElementById('res-xmax');
+        const resTtot = document.getElementById('res-ttot');
+        
+        const btnShoot = document.getElementById('btn-shoot');
+        const btnClear = document.getElementById('btn-clear');
+
+        let g = 9.8;
+        let v0 = 20;
+        let thetaDeg = 45;
+        let theta = thetaDeg * Math.PI / 180;
+        
+        let v0x = 0;
+        let v0y = 0;
+        let t = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isSimulating = false;
+        let animationId;
+        const timeStep = 0.05; 
+
+        let trajectories = []; 
+        let currentTrajectory = [];
+
+        const colorPalette = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+        let colorIndex = 0;
+        let currentColor = colorPalette[0];
+
+        let globalMaxX = 0;
+        let globalMaxY = 0;
+
+        let scale = 5; 
+        const originX = 40; 
+        let originY = 360; 
+
+        function resizeCanvas() {
+            if(canvas.clientWidth === 0) return; 
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight || 400; 
+            originY = canvas.height - 40;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function drawAxes() {
+            ctx.beginPath();
+            ctx.strokeStyle = '#cbd5e1'; 
+            ctx.lineWidth = 1;
+            
+            ctx.moveTo(0, originY);
+            ctx.lineTo(canvas.width, originY);
+            
+            ctx.moveTo(originX, 0);
+            ctx.lineTo(originX, canvas.height);
+            ctx.stroke();
+
+            ctx.fillStyle = '#94a3b8'; 
+            ctx.font = "10px Inter";
+            ctx.fillText("0", originX - 12, originY + 12);
+            ctx.fillText("X (m)", canvas.width - 30, originY + 15);
+            ctx.fillText("Y (m)", originX - 30, 20);
+        }
+
+        function drawProjectile(x, y, color) {
+            ctx.beginPath();
+            ctx.arc(originX + x * scale, originY - y * scale, 6, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(originX + x * scale, originY - y * scale, 8, 0, Math.PI * 2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        function drawTrace(path, color) {
+            if (path.length < 2) return;
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([5, 5]); 
+            ctx.moveTo(originX + path[0].x * scale, originY - path[0].y * scale);
+            for (let i = 1; i < path.length; i++) {
+                ctx.lineTo(originX + path[i].x * scale, originY - path[i].y * scale);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]); 
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawAxes();
+            
+            trajectories.forEach(traj => {
+                drawTrace(traj.path, traj.color); 
+                if(traj.path.length > 0) {
+                    let lastP = traj.path[traj.path.length-1];
+                    drawProjectile(lastP.x, lastP.y, traj.color);
+                }
+            });
+
+            drawTrace(currentTrajectory, currentColor);
+            
+            if (isSimulating || currentTrajectory.length > 0) {
+                drawProjectile(currentX, currentY, currentColor);
+            } else {
+                drawProjectile(0, 0, currentColor);
+            }
+        }
+
+        let lastLogTime = 0;
+        
+        function addTableRow(color, time, x, y, vx, vy, v) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="py-2 px-3"><div class="w-4 h-4 rounded-full mx-auto shadow-sm" style="background-color: ${color};"></div></td>
+                <td class="py-2 px-3 font-mono">${time.toFixed(2)}</td>
+                <td class="py-2 px-3 font-mono text-blue-600">${x.toFixed(2)}</td>
+                <td class="py-2 px-3 font-mono text-green-600">${y.toFixed(2)}</td>
+                <td class="py-2 px-3 font-mono text-gray-600 bg-blue-50/30">${vx.toFixed(2)}</td>
+                <td class="py-2 px-3 font-mono text-gray-600 bg-green-50/30">${vy.toFixed(2)}</td>
+                <td class="py-2 px-3 font-mono font-bold text-red-500 bg-red-50/30">${v.toFixed(2)}</td>
+            `;
+            dataTableBody.appendChild(tr);
+            tableContainer.scrollTop = tableContainer.scrollHeight;
+        }
+
+        function calculateTheoretical() {
+            const thYmax = Math.pow(v0, 2) * Math.pow(Math.sin(theta), 2) / (2 * g);
+            const thXmax = Math.pow(v0, 2) * Math.sin(2 * theta) / g;
+            const thTtot = (2 * v0 * Math.sin(theta)) / g;
+
+            resYmax.innerText = thYmax.toFixed(2);
+            resXmax.innerText = thXmax.toFixed(2);
+            resTtot.innerText = thTtot.toFixed(2);
+            resPanel.classList.remove('hidden');
+
+            if (thXmax > globalMaxX) globalMaxX = thXmax;
+            if (thYmax > globalMaxY) globalMaxY = thYmax;
+
+            const maxRequiredWidthPixels = canvas.width - originX - 40;
+            let newScale = maxRequiredWidthPixels / globalMaxX;
+            
+            const maxRequiredHeightPixels = originY - 40;
+            const yMinScale = maxRequiredHeightPixels / globalMaxY;
+            
+            if (yMinScale < newScale && globalMaxY > 0) {
+                newScale = yMinScale;
+            }
+            
+            if(newScale > 15) newScale = 15;
+            if(newScale < 1) newScale = 1; 
+            
+            scale = newScale;
+        }
+
+        function updatePhysics() {
+            t += timeStep;
+            
+            currentX = v0x * t;
+            currentY = (v0y * t) - (0.5 * g * t * t);
+            
+            let currentVx = v0x;
+            let currentVy = v0y - (g * t);
+            let currentV = Math.sqrt(currentVx*currentVx + currentVy*currentVy);
+
+            if (currentY <= 0) {
+                currentY = 0;
+                const tEnd = (2 * v0y) / g;
+                currentX = v0x * tEnd;
+                t = tEnd;
+                let finalVy = v0y - (g * tEnd);
+                currentV = Math.sqrt(v0x*v0x + finalVy*finalVy);
+                
+                isSimulating = false;
+                
+                btnShoot.disabled = false;
+                btnShoot.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+                btnShoot.innerHTML = '🚀 LAUNCH';
+                
+                currentTrajectory.push({x: currentX, y: currentY, v: currentV});
+                trajectories.push({path: [...currentTrajectory], color: currentColor});
+                
+                addTableRow(currentColor, t, currentX, currentY, v0x, finalVy, currentV);
+            } else {
+                currentTrajectory.push({x: currentX, y: currentY, v: currentV});
+                
+                if (t - lastLogTime >= 0.2) {
+                    addTableRow(currentColor, t, currentX, currentY, currentVx, currentVy, currentV);
+                    lastLogTime = t;
+                }
+            }
+
+            outT.innerText = t.toFixed(2) + " s";
+            outX.innerText = currentX.toFixed(2) + " m";
+            outY.innerText = currentY.toFixed(2) + " m";
+            outV.innerText = currentV.toFixed(2) + " m/s";
+
+            draw();
+
+            if (isSimulating) {
+                animationId = requestAnimationFrame(updatePhysics);
+            }
+        }
+
+        btnShoot.addEventListener('click', () => {
+            if (isSimulating) return;
+
+            currentColor = colorPalette[colorIndex % colorPalette.length];
+            colorIndex++;
+
+            cancelAnimationFrame(animationId);
+            t = 0;
+            lastLogTime = 0;
+            currentX = 0;
+            currentY = 0;
+            
+            const initialV = Math.sqrt(v0x*v0x + v0y*v0y);
+            currentTrajectory = [{x:0, y:0, v: initialV}];
+
+            v0 = parseFloat(document.getElementById('velocity').value) || 0;
+            thetaDeg = parseFloat(document.getElementById('angle').value) || 0;
+            g = parseFloat(document.getElementById('gravity').value) || 9.8;
+            
+            theta = thetaDeg * Math.PI / 180;
+            v0x = v0 * Math.cos(theta);
+            v0y = v0 * Math.sin(theta);
+            
+            const exactInitialV = Math.sqrt(v0x*v0x + v0y*v0y);
+            addTableRow(currentColor, 0, 0, 0, v0x, v0y, exactInitialV);
+
+            calculateTheoretical();
+            
+            isSimulating = true;
+            btnShoot.disabled = true;
+            btnShoot.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+            btnShoot.innerHTML = '⏱️ SIMULATING...';
+            
+            updatePhysics();
+        });
+
+        btnClear.addEventListener('click', () => {
+            cancelAnimationFrame(animationId);
+            isSimulating = false;
+            trajectories = [];
+            currentTrajectory = [];
+            t = 0; currentX = 0; currentY = 0;
+            
+            globalMaxX = 0;
+            globalMaxY = 0;
+            colorIndex = 0;
+            currentColor = colorPalette[0];
+            
+            outT.innerText = "0.00 s"; outX.innerText = "0.00 m"; 
+            outY.innerText = "0.00 m"; outV.innerText = "0.00 m/s";
+            resPanel.classList.add('hidden');
+            
+            dataTableBody.innerHTML = '';
+            
+            btnShoot.disabled = false;
+            btnShoot.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+            btnShoot.innerHTML = '🚀 LAUNCH';
+            
+            scale = 5;
+            draw();
+        });
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+        });
+    </script>
+
+<script>
+let lastScrollTop = 0;
+const header = document.querySelector('header');
+
+window.addEventListener('scroll', function () {
+    let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (currentScroll > lastScrollTop && currentScroll > 100) {
+        header.style.transform = 'translateY(-100%)';
+    } else {
+        header.style.transform = 'translateY(0)';
+    }
+
+    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+});
+</script>
+</body>
+</html>
